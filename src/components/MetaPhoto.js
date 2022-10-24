@@ -5,6 +5,9 @@ import useHttp from "../components/hooks/use-http";
 
 function MetaPhoto() {
   const [parametersValues, setParameters] = useState();
+  const apiUri = "http://localhost:3001/api/photos?";
+  const { isLoading, isError, sendDataRequest } = useHttp();
+  let content = <p>Found no Photos</p>;
   const [enteredData, setData] = useState({
     pages: 0,
     offset: 0,
@@ -12,9 +15,6 @@ function MetaPhoto() {
     currentPage: 0,
     photos: [],
   });
-  const apiUri = "http://localhost:3001/api/photos?";
-
-  const { isLoading, isError, sendDataRequest } = useHttp();
 
   const setDataHandler = useCallback((dataObject) => {
     const newObject = {
@@ -39,25 +39,31 @@ function MetaPhoto() {
   const submitNextPageRequest = (parameters) => {
     sendDataRequest(apiUri, parameters, setDataHandler);
   };
+
+  if (enteredData.photos.length > 0) {
+    content = (
+      <PhotoGrid
+        enteredData={enteredData}
+        parametersValues={parametersValues}
+        onSendDataRequest={submitNextPageRequest}
+      />
+    );
+  }
+
+  if (isError) {
+    content = <p>{isError}</p>;
+  }
+
+  if (isLoading) {
+    content = <p>is Loading...!</p>;
+  }
+
   return (
     <>
       <section>
         <Form onSubmitRequest={submitRequest}></Form>
       </section>
-      <section>
-        {isLoading && <p>is Loading...!</p>}
-        {!isLoading && isError && <p>{isError}</p>}
-        {!isLoading && enteredData.photos.length > 0 && !isError && (
-          <PhotoGrid
-            enteredData={enteredData}
-            parametersValues={parametersValues}
-            onSendDataRequest={submitNextPageRequest}
-          />
-        )}
-        {!isLoading && enteredData.photos.length === 0 && !isError && (
-          <p>Found no Photos</p>
-        )}
-      </section>
+      <section>{content}</section>
     </>
   );
 }
