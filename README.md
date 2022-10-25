@@ -6,6 +6,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 1) [NodeJs](https://nodejs.org/es/) installed on the system.
 
+###Recommended environment:
+
+1) NodeJs 14.x (Recommend v14.17.1)
+2) npm 6+ (Recommend v6.14.13)
+
 ## Available Scripts
 
 In the project directory, you must run:
